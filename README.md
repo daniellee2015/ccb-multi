@@ -2,37 +2,95 @@
 
 Multi-instance manager for CCB (Claude Code Bridge) - Run multiple AI coding sessions in parallel.
 
-## Why ccb-multi?
+## Background
 
-**Better than git worktree for parallel AI coding sessions.**
+### What is CCB?
 
-While `git worktree` allows multiple working directories, ccb-multi provides a superior solution for running multiple CCB instances:
+[CCB (Claude Code Bridge)](https://github.com/bfly123/claude_code_bridge) is a powerful tool for real-time multi-AI collaboration, supporting Claude, Codex, and Gemini with persistent context and minimal token overhead.
 
-| Feature | git worktree | ccb-multi |
-|---------|-------------|-----------|
-| **Shared History** | ❌ Separate history per worktree | ✅ All instances share conversation history |
-| **Instance Management** | ❌ Manual terminal management | ✅ Automatic instance isolation and cleanup |
-| **Context Switching** | ❌ Need to remember which worktree has what | ✅ Easy status checking across all instances |
-| **Resource Efficiency** | ❌ Duplicate files and configs | ✅ Shared resources via symlinks |
-| **Setup Complexity** | ❌ Manual worktree creation and cleanup | ✅ One command to start/stop instances |
+**CCB's Strengths:**
+- 🤖 Multi-AI provider support (Claude, Codex, Gemini)
+- 🔄 Powerful task scheduling and orchestration
+- 💾 Persistent context across sessions
+- ⚡ Efficient token usage
 
-**Use Case Example:**
+### The Single-Instance Problem
 
-```bash
-# With git worktree (complex):
-git worktree add ../project-feature-1 feature-1
-git worktree add ../project-feature-2 feature-2
-cd ../project-feature-1 && ccb codex
-# Switch terminal, cd ../project-feature-2 && ccb gemini
-# Manually track which worktree is doing what
-# Cleanup: git worktree remove ../project-feature-1
+**CCB runs as a single instance**, which creates significant limitations during development:
 
-# With ccb-multi (simple):
-ccb-multi 1 codex    # Instance 1 working on feature-1
-ccb-multi 2 gemini   # Instance 2 working on feature-2
-ccb-multi-status     # See all instances at a glance
-ccb-multi-clean      # Clean up everything
+**Common Development Scenarios:**
+
+1. **Parallel Feature Development**
+   - You're implementing Feature A with Claude
+   - Suddenly need to fix a critical bug in Feature B
+   - Must stop Feature A session, lose context, switch to Feature B
+   - Can't leverage Codex for Feature A while Claude handles Feature B
+
+2. **Multi-Provider Workflows**
+   - Want Claude to review architecture
+   - Want Codex to implement algorithms
+   - Want Gemini to write documentation
+   - Can only run one at a time, losing the parallel efficiency
+
+3. **Context Switching Overhead**
+   - Each time you switch tasks, you lose the current session context
+   - Need to rebuild context when returning to previous task
+   - Wastes time and tokens re-explaining the same context
+
+**The Pain Point:** CCB's powerful capabilities are bottlenecked by single-instance limitation. You can't fully utilize multiple AI providers in parallel for different tasks.
+
+## Our Solution: ccb-multi
+
+ccb-multi solves the single-instance problem by enabling **multiple isolated CCB instances** while maintaining **shared session history**.
+
+### Design Philosophy
+
+**Instance Isolation + History Sharing**
+
 ```
+┌─────────────────────────────────────────────────────────────┐
+│                    Your Project Root                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  .ccb/                                                       │
+│  ├── history/          ← Shared across all instances        │
+│  └── ccb.config        ← Shared configuration               │
+│                                                              │
+│  .ccb-instances/                                             │
+│  ├── instance-1/       ← Isolated workspace (Feature A)     │
+│  │   ├── .ccb/                                              │
+│  │   │   └── history → ../../.ccb/history/  (symlink)       │
+│  │   └── [working files]                                    │
+│  │                                                           │
+│  └── instance-2/       ← Isolated workspace (Feature B)     │
+│      ├── .ccb/                                              │
+│      │   └── history → ../../.ccb/history/  (symlink)       │
+│      └── [working files]                                    │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key Design Decisions:**
+
+1. **Isolated Workspaces**: Each instance has its own directory to avoid file conflicts
+2. **Shared History**: All instances share `.ccb/history/` via symlinks for context continuity
+3. **Shared Config**: Common configuration across all instances
+4. **File Sync**: Changes sync back to project root automatically
+
+### Why Not Git Worktree?
+
+You might think: "Can't I just use `git worktree` for multiple working directories?"
+
+**Git worktree** is a valid approach, but has limitations:
+
+| Aspect | git worktree | ccb-multi |
+|--------|-------------|-----------|
+| **Session History** | ❌ Separate per worktree | ✅ Shared across instances |
+| **Setup** | ❌ Manual worktree management | ✅ One command to start |
+| **Cleanup** | ❌ Manual removal needed | ✅ Automatic cleanup |
+| **Status Tracking** | ❌ No unified view | ✅ See all instances at once |
+
+**ccb-multi** is purpose-built for CCB's multi-instance needs, with automatic history sharing and instance management.
 
 ## Features
 
