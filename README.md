@@ -1,4 +1,4 @@
-# ccb-multi
+# CCB-Multi - Multi-Instance Manager for Claude Code Bridge
 
 Multi-instance manager for CCB (Claude Code Bridge) - Run multiple AI coding sessions in parallel.
 
