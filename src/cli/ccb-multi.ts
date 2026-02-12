@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+
+import { Command } from 'commander';
+import { startInstance } from '../lib/instance';
+import { getProjectInfo } from '../lib/utils';
+import chalk from 'chalk';
+
+const program = new Command();
+
+program
+  .name('ccb-multi')
+  .description('Multi-instance manager for CCB (Claude Code Bridge)')
+  .version('1.0.0')
+  .argument('<instance-id>', 'Instance ID (1, 2, 3, ...)')
+  .argument('[providers...]', 'AI providers (e.g., codex gemini claude)')
+  .action(async (instanceId: string, providers: string[]) => {
+    try {
+      const projectInfo = getProjectInfo();
+
+      console.log('');
+      console.log(chalk.cyan('    ██████╗ ██████╗██████╗       ███╗   ███╗██╗   ██╗██╗  ████████╗██╗'));
+      console.log(chalk.cyan('   ██╔════╝██╔════╝██╔══██╗      ████╗ ████║██║   ██║██║  ╚══██╔══╝██║'));
+      console.log(chalk.cyan('   ██║     ██║     ██████╔╝█████╗██╔████╔██║██║   ██║██║     ██║   ██║'));
+      console.log(chalk.cyan('   ██║     ██║     ██╔══██╗╚════╝██║╚██╔╝██║██║   ██║██║     ██║   ██║'));
+      console.log(chalk.cyan('   ╚██████╗╚██████╗██████╔╝      ██║ ╚═╝ ██║╚██████╔╝███████╗██║   ██║'));
+      console.log(chalk.cyan('    ╚═════╝ ╚═════╝╚═════╝       ╚═╝     ╚═╝ ╚═════╝ ╚══════╝╚═╝   ╚═╝'));
+      console.log('');
+      console.log('  Multi-Instance Manager for Claude Code Bridge');
+      console.log('');
+      console.log(chalk.dim(`    Project     ${projectInfo.name}`));
+      console.log(chalk.dim(`    Instance    ${instanceId}`));
+
+      if (providers.length > 0) {
+        console.log(chalk.dim(`    Providers   ${providers.join(', ')}`));
+      }
+
+      console.log('');
+
+      await startInstance(instanceId, providers, projectInfo);
+
+    } catch (error) {
+      console.error(chalk.red('  ✗ Error:'), error instanceof Error ? error.message : error);
+      process.exit(1);
+    }
+  });
+
+program.parse();

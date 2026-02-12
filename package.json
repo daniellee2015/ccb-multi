@@ -1,0 +1,45 @@
+{
+  "name": "ccb-multi",
+  "version": "0.1.0",
+  "description": "Multi-instance manager for CCB (Claude Code Bridge) - Run multiple AI coding sessions in parallel",
+  "main": "lib/index.js",
+  "bin": {
+    "ccb-multi": "./bin/ccb-multi.js",
+    "ccb-multi-status": "./bin/ccb-multi-status.js",
+    "ccb-multi-history": "./bin/ccb-multi-history.js",
+    "ccb-multi-clean": "./bin/ccb-multi-clean.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ccb",
+    "claude",
+    "claude-code-bridge",
+    "multi-instance",
+    "ai",
+    "development",
+    "cli",
+    "parallel",
+    "coding-assistant"
+  ],
+  "author": "dalio willd",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daniellee2015/ccb-multi.git"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.0.0"
+  }
+}
