@@ -1,6 +1,6 @@
 {
   "name": "ccb-multi",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Multi-instance manager for CCB (Claude Code Bridge) - Run multiple AI coding sessions in parallel",
   "main": "lib/index.js",
   "bin": {

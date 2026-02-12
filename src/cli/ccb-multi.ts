@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { startInstance } from '../lib/instance';
-import { getProjectInfo } from '../lib/utils';
+import { startInstance } from '../instance';
+import { getProjectInfo } from '../utils';
 import chalk from 'chalk';
 
 const program = new Command();

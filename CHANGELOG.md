@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] - 2026-02-13
+
+### Fixed
+
+- Fix module resolution error by restructuring source directory
+- Move `src/lib/*` files to `src/` root to fix import paths
+- Compiled files now correctly placed in `lib/` instead of `lib/lib/`
+
 ## [0.1.0] - 2026-02-13
 
 ### Added

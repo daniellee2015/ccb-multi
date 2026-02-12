@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk';
-import { getProjectInfo, listInstances, isInstanceRunning } from '../lib/utils';
+import { getProjectInfo, listInstances, isInstanceRunning } from '../utils';
 
 async function main() {
   try {

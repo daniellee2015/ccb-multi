@@ -3,7 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
-import { getProjectInfo, getInstancesDir } from '../lib/utils';
+import { getProjectInfo, getInstancesDir } from '../utils';
 import { Command } from 'commander';
 
 const program = new Command();
