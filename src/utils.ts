@@ -1,9 +1,14 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import { createHash } from 'crypto';
 
 export interface ProjectInfo {
   root: string;
   name: string;
+}
+
+function _shortProjectHash(projectRoot: string): string {
+  return createHash('sha256').update(projectRoot).digest('hex').slice(0, 8);
 }
 
 export function getProjectInfo(): ProjectInfo {
@@ -18,7 +23,18 @@ export function getInstancesDir(projectRoot: string): string {
 }
 
 export function getInstanceDir(projectRoot: string, instanceId: string): string {
-  return path.join(getInstancesDir(projectRoot), `instance-${instanceId}`);
+  const hash = _shortProjectHash(projectRoot);
+  const newDir = path.join(getInstancesDir(projectRoot), `inst-${hash}-${instanceId}`);
+
+  // Backward compat: if new dir doesn't exist but old format does, use old
+  if (!fs.existsSync(newDir)) {
+    const oldDir = path.join(getInstancesDir(projectRoot), `instance-${instanceId}`);
+    if (fs.existsSync(oldDir)) {
+      return oldDir;
+    }
+  }
+
+  return newDir;
 }
 
 export function listInstances(projectRoot: string): string[] {
@@ -28,9 +44,15 @@ export function listInstances(projectRoot: string): string[] {
     return [];
   }
 
+  const hash = _shortProjectHash(projectRoot);
+  const newPrefix = `inst-${hash}-`;
+
   return fs.readdirSync(instancesDir)
-    .filter(name => name.startsWith('instance-'))
-    .map(name => name.replace('instance-', ''))
+    .filter(name => name.startsWith(newPrefix) || name.startsWith('instance-'))
+    .map(name => {
+      if (name.startsWith(newPrefix)) return name.slice(newPrefix.length);
+      return name.replace('instance-', '');
+    })
     .sort((a, b) => parseInt(a) - parseInt(b));
 }
 

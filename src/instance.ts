@@ -1,15 +1,23 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { spawn } from 'child_process';
+import { createHash } from 'crypto';
 import chalk from 'chalk';
 import { ProjectInfo } from './types';
+
+// Generate a short (8-char) hash from project root path to avoid
+// basename collisions across projects in Gemini CLI 0.29.0.
+function _shortProjectHash(projectRoot: string): string {
+  return createHash('sha256').update(projectRoot).digest('hex').slice(0, 8);
+}
 
 export async function startInstance(
   instanceId: string,
   providers: string[],
   projectInfo: ProjectInfo
 ): Promise<void> {
-  const instanceDir = path.join(projectInfo.root, '.ccb-instances', `instance-${instanceId}`);
+  const projectHash = _shortProjectHash(projectInfo.root);
+  const instanceDir = path.join(projectInfo.root, '.ccb-instances', `inst-${projectHash}-${instanceId}`);
   const ccbDir = path.join(instanceDir, '.ccb');
 
   // Create instance directory

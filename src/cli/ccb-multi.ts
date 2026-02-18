@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 
+import * as path from 'path';
 import { Command } from 'commander';
 import { startInstance } from '../instance';
 import { getProjectInfo } from '../utils';
 import chalk from 'chalk';
+
+// Read version from package.json at runtime
+const pkg = require(path.join(__dirname, '..', '..', 'package.json'));
 
 const program = new Command();
 
 program
   .name('ccb-multi')
   .description('Multi-instance manager for CCB (Claude Code Bridge)')
-  .version('1.0.0')
+  .version(pkg.version)
   .argument('<instance-id>', 'Instance ID (1, 2, 3, ...)')
   .argument('[providers...]', 'AI providers (e.g., codex gemini claude)')
   .action(async (instanceId: string, providers: string[]) => {
