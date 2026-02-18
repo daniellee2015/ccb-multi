@@ -1,12 +1,12 @@
 # Changelog
 
-## [1.0.0] - 2026-02-18
+## [0.2.0] - 2026-02-18
 
 ### Changed
 
 - **Instance dir naming**: Changed from `instance-N` to `inst-<hash>-N` (8-char SHA-256 of project root) to prevent cross-project collisions in Gemini CLI 0.29.0's basename-based session storage
 - **Backward compat**: Old `instance-N` directories are still recognized and used during transition
-- **Version bump**: Aligned with CCB Multi v1.0.0 independent version line
+- **Pre-release**: Testing phase before stable 1.0.0 release
 
 ## [0.1.1] - 2026-02-13
 
